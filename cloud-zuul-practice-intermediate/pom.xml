@@ -21,6 +21,7 @@
         <module>cloud-service-a-intermediate</module>
         <module>cloud-zuul-gateway</module>
         <module>cloud-auth-server</module>
+        <module>cloud-service-b-intermediate</module>
     </modules>
 
     <properties>

@@ -3,39 +3,57 @@ server:
 spring:
   application:
     name: zuul-server
+  datasource:
+    username: root
+    password: root123456
+    url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57Dialect
+        storage_engine: innodb
 eureka:
   client:
     serviceUrl:
       defaultZone: http://${eureka.host:127.0.0.1}:${eureka.port:8671}/eureka/
   instance:
     prefer-ip-address: true
-zuul:
-  routes:
-    service-a:
-      path: /servicea/**
-      serviceId: service-a
-  ratelimit:
-    key-prefix: zuul-rate
-    enabled: true
-    repository: BUCKET4J_JCACHE
-    behind-proxy: true
-    default-policy:
-      limit: 2
-      quota: 1
-      refresh-interval: 3
-      type:
-        - user
-        - origin
-        - uri
-security:
-  oauth2:
-    client:
-      access-token-uri: http://localhost:7788/uaa/oauth/token #令牌端点
-      user-authorization-uri: http://localhost:7788/uaa/oauth/authorize #授权端点
-      client-id: zuul-gateway #OAuth2客户端ID
-      client-secret: my-secret #OAuth2客户端密钥
-    resource:
-      jwt:
-        key-value: hahaha #使用对称加密方式，默认算法为HS256
-  basic:
-    enabled: false
+logging:
+  level:
+    org.springframework.cloud.netflix: debug
+#zuul:
+#  routes:
+#    service-a:
+#      path: /servicea/**
+#      serviceId: service-a
+#  ratelimit:
+#    key-prefix: zuul-rate
+#    enabled: true
+#    repository: BUCKET4J_JCACHE
+#    behind-proxy: true
+#    default-policy:
+#      limit: 2
+#      quota: 1
+#      refresh-interval: 3
+#      type:
+#        - user
+#        - origin
+#        - uri
+#security:
+#  oauth2:
+#    client:
+#      access-token-uri: http://localhost:7788/uaa/oauth/token #令牌端点
+#      user-authorization-uri: http://localhost:7788/uaa/oauth/authorize #授权端点
+#      client-id: zuul-gateway #OAuth2客户端ID
+#      client-secret: my-secret #OAuth2客户端密钥
+#    resource:
+#      jwt:
+#        key-value: hahaha #使用对称加密方式，默认算法为HS256
+#  basic:
+#    enabled: false
