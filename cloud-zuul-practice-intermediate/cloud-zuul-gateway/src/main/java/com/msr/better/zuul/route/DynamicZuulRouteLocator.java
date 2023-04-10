@@ -1,15 +1,18 @@
 package com.msr.better.zuul.route;
 
 import com.msr.better.zuul.service.RoutingRuleService;
+import org.hibernate.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.RefreshableRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.SimpleRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
+import org.springframework.cloud.netflix.zuul.filters.ZuulProperties.ZuulRoute;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author MaiShuRen
@@ -18,9 +21,11 @@ import java.util.Map;
  **/
 public class DynamicZuulRouteLocator extends SimpleRouteLocator implements RefreshableRouteLocator {
 
-    private ZuulProperties zuulProperties;
+    private final ZuulProperties zuulProperties;
 
-    private RoutingRuleService routingRuleService;
+    private final RoutingRuleService routingRuleService;
+
+    private static final ConcurrentHashMap<String, ZuulRoute> routesCache = new ConcurrentHashMap<>();
 
     public DynamicZuulRouteLocator(String servletPath, ZuulProperties properties, RoutingRuleService routingRuleService) {
         super(servletPath, properties);
@@ -35,10 +40,16 @@ public class DynamicZuulRouteLocator extends SimpleRouteLocator implements Refre
 
     @Override
     protected Map<String, ZuulProperties.ZuulRoute> locateRoutes() {
+        Map<String, ZuulProperties.ZuulRoute> allRoutes = null;
+        if (routesCache.isEmpty()) {
+            allRoutes = routingRuleService.findAllRoutes();
+            routesCache.putAll(allRoutes);
+        } else {
+            allRoutes = routesCache;
+        }
         LinkedHashMap<String, ZuulProperties.ZuulRoute> routesMap = new LinkedHashMap<>();
         routesMap.putAll(super.locateRoutes());
-        Map<String, ZuulProperties.ZuulRoute> allRoutes = routingRuleService.findAllRoutes();
-        routesMap.putAll(routingRuleService.findAllRoutes());
+        routesMap.putAll(allRoutes);
         LinkedHashMap<String, ZuulProperties.ZuulRoute> values = new LinkedHashMap<>();
         routesMap.forEach((key, value) -> {
             String path = key;
@@ -54,5 +65,9 @@ public class DynamicZuulRouteLocator extends SimpleRouteLocator implements Refre
             values.put(path, value);
         });
         return values;
+    }
+
+    public static void clearCache() {
+        routesCache.clear();
     }
 }

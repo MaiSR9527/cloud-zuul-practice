@@ -2,18 +2,19 @@ package com.msr.better.zuul.service.impl;
 
 import com.msr.better.zuul.dao.RoutingRuleDao;
 import com.msr.better.zuul.entity.RoutingRule;
+import com.msr.better.zuul.event.RefreshRouteEvent;
 import com.msr.better.zuul.service.RoutingRuleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author MaiShuRen
@@ -25,6 +26,8 @@ public class RoutingRuleServiceImpl implements RoutingRuleService {
 
     @Autowired
     private RoutingRuleDao routingRuleDao;
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     @Override
     public Map<String, ZuulProperties.ZuulRoute> findAllRoutes() {
@@ -43,5 +46,19 @@ public class RoutingRuleServiceImpl implements RoutingRuleService {
                     zuulRouteMap.put(item.getPath(), zuulRoute);
                 });
         return zuulRouteMap;
+    }
+
+    @Override
+    public void save(RoutingRule routingRule) {
+        RoutingRule rule = routingRuleDao.saveAndFlush(routingRule);
+        publisher.publishEvent(new RefreshRouteEvent(rule));
+    }
+
+    @Override
+    public void delete(Long id) {
+        routingRuleDao.deleteById(id);
+        RoutingRule routingRule = new RoutingRule();
+        routingRule.setId(id);
+        publisher.publishEvent(new RefreshRouteEvent(routingRule));
     }
 }

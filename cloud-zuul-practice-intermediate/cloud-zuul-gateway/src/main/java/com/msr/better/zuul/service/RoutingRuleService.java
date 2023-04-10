@@ -1,5 +1,6 @@
 package com.msr.better.zuul.service;
 
+import com.msr.better.zuul.entity.RoutingRule;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 
 import java.util.Map;
@@ -12,4 +13,8 @@ import java.util.Map;
 public interface RoutingRuleService {
 
     Map<String, ZuulProperties.ZuulRoute> findAllRoutes();
+
+    void save(RoutingRule routingRule);
+
+    void delete(Long id);
 }
