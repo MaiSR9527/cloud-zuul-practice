@@ -1,4 +1,4 @@
-package com.msr.better.zuul.handler;
+package com.msr.better.zuul.listener;
 
 import com.msr.better.zuul.event.RefreshRouteEvent;
 import com.msr.better.zuul.route.DynamicZuulRouteLocator;
