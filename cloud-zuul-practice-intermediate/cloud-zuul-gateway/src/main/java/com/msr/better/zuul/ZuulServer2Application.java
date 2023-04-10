@@ -3,19 +3,19 @@ package com.msr.better.zuul;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 
 /**
  * @author MaiShuRen
  * @site https://www.maishuren.top
- * @since 2021-05-16 15:53
+ * @since 2021-05-16 16:15
  **/
 @SpringBootApplication
+@EnableZuulProxy
 @EnableDiscoveryClient
-@EnableResourceServer
-public class ServiceAApplication {
-
+// @EnableOAuth2Sso
+public class ZuulServer2Application {
     public static void main(String[] args) {
-        SpringApplication.run(ServiceAApplication.class, args);
+        SpringApplication.run(ZuulServer2Application.class, args);
     }
 }
