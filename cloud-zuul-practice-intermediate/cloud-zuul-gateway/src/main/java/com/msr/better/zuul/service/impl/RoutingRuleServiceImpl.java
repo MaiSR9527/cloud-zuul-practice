@@ -59,6 +59,8 @@ public class RoutingRuleServiceImpl implements RoutingRuleService {
         routingRuleDao.deleteById(id);
         RoutingRule routingRule = new RoutingRule();
         routingRule.setId(id);
-        publisher.publishEvent(new RefreshRouteEvent(routingRule));
+        RefreshRouteEvent refreshRouteEvent = new RefreshRouteEvent(routingRule);
+        refreshRouteEvent.setDelete(true);
+        publisher.publishEvent(refreshRouteEvent);
     }
 }

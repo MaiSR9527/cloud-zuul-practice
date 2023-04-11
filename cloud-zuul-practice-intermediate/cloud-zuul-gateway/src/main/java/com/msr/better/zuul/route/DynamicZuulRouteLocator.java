@@ -1,13 +1,10 @@
 package com.msr.better.zuul.route;
 
 import com.msr.better.zuul.service.RoutingRuleService;
-import org.hibernate.Cache;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.RefreshableRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.SimpleRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties.ZuulRoute;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.LinkedHashMap;
@@ -69,5 +66,22 @@ public class DynamicZuulRouteLocator extends SimpleRouteLocator implements Refre
 
     public static void clearCache() {
         routesCache.clear();
+    }
+
+    public void removeRoute(String id) {
+        for (String path : routesCache.keySet()) {
+            ZuulRoute zuulRoute = routesCache.get(path);
+            if (org.apache.commons.lang3.StringUtils.equals(id, zuulRoute.getId())) {
+                routesCache.remove(path);
+                // 刷新 SimpleRouteLocator 里的路由信息
+                refresh();
+            }
+        }
+    }
+
+    public void addRoute(ZuulRoute zuulRoute) {
+        routesCache.put(zuulRoute.getPath(), zuulRoute);
+        // 刷新 SimpleRouteLocator 里的路由信息
+        refresh();
     }
 }

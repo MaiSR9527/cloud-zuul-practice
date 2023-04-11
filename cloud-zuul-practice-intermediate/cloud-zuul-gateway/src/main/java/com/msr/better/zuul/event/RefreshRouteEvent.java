@@ -9,7 +9,17 @@ import org.springframework.context.ApplicationEvent;
  */
 public class RefreshRouteEvent extends ApplicationEvent {
 
+    private boolean isDelete = false;
+
     public RefreshRouteEvent(Object source) {
         super(source);
+    }
+
+    public boolean isDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(boolean delete) {
+        isDelete = delete;
     }
 }
