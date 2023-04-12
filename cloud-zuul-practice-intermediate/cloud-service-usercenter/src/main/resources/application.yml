@@ -1,0 +1,48 @@
+server:
+  port: 8877
+spring:
+  profiles: node1
+  application:
+    name: usercenter
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.host:127.0.0.1}:${eureka.port:8671}/eureka/
+  instance:
+    prefer-ip-address: true
+    metadata-map:
+      version: release
+
+---
+
+server:
+  port: 8899
+spring:
+  profiles: node2
+  application:
+    name: usercenter
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.host:127.0.0.1}:${eureka.port:8671}/eureka/
+  instance:
+    prefer-ip-address: true
+    metadata-map:
+      version: release
+
+---
+
+server:
+  port: 8866
+spring:
+  profiles: node3
+  application:
+    name: usercenter
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.host:127.0.0.1}:${eureka.port:8671}/eureka/
+  instance:
+    prefer-ip-address: true
+    metadata-map:
+      version: gray

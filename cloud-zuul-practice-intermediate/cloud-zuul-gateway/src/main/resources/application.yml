@@ -27,11 +27,11 @@ eureka:
 logging:
   level:
     org.springframework.cloud.netflix: debug
-#zuul:
-#  routes:
-#    service-a:
-#      path: /servicea/**
-#      serviceId: service-a
+zuul:
+  routes:
+    service-a:
+      path: /usercenter/**
+      serviceId: usercenter
 #  ratelimit:
 #    key-prefix: zuul-rate
 #    enabled: true
